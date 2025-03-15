@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة نشر المقالات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-section, .profile-section {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="password"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: none;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .logout-btn {
+            background-color: #dc3545;
+        }
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
+        .switch-form {
+            text-align: center;
+            margin-top: 10px;
+        }
+        .switch-form a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .switch-form a:hover {
+            text-decoration: underline;
+        }
+        .hidden {
+            display: none;
+        }
+        .article-item {
+            background: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .article-item h3 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+        .article-item p {
+            margin: 0;
+            color: #555;
+        }
+        .comments-section {
+            margin-top: 10px;
+        }
+        .comment-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .comment-input input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .rating {
+            margin-top: 10px;
+        }
+        .rating span {
+            margin-left: 5px;
+            cursor: pointer;
+            color: #ffc107;
+            font-size: 20px;
+        }
+        .rated {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        .comment {
+            background: #e9ecef;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 4px;
+            position: relative;
+        }
+        .comment-author {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .file-link {
+            color: #28a745;
+            text-decoration: none;
+        }
+        .file-link:hover {
+            text-decoration: underline;
+        }
+        .profile-info {
+            margin-bottom: 15px;
+        }
+        .profile-info p {
+            margin: 5px 0;
+        }
+        .profile-articles {
+            margin-top: 10px;
+        }
+        .profile-articles h4 {
+            margin-bottom: 10px;
+        }
+        .profile-articles ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .profile-articles li {
+            background: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>منصة نشر المقالات</h1>
+    </header>
+
+    <div class="container">
+        <!-- تسجيل الدخول -->
+        <div id="loginSection" class="form-section">
+            <h2>تسجيل الدخول</h2>
+            <input type="text" id="loginUsername" placeholder="اسم المستخدم...">
+            <input type="password" id="loginPassword" placeholder="كلمة المرور...">
+            <button onclick="login()">تسجيل الدخول</button>
+            <div class="switch-form">
+                ليس لديك حساب؟ <a href="#" onclick="switchToRegister(event)">إنشاء حساب</a>
+            </div>
+        </div>
+
+        <!-- إنشاء حساب -->
+        <div id="registerSection" class="form-section hidden">
+            <h2>إنشاء حساب جديد</h2>
+            <input type="text" id="registerUsername" placeholder="اسم المستخدم...">
+            <input type="password" id="registerPassword" placeholder="كلمة المرور...">
+            <textarea id="registerBio" placeholder="نبذة عنك..." rows="3"></textarea>
+            <button onclick="register()">إنشاء الحساب</button>
+            <div class="switch-form">
+                لديك حساب؟ <a href="#" onclick="switchToLogin(event)">تسجيل الدخول</a>
+            </div>
+        </div>
+
+        <!-- لوحة النشر -->
+        <div id="publishSection" class="form-section hidden">
+            <h2>لوحة النشر</h2>
+            <button class="logout-btn" onclick="logout()">تسجيل الخروج</button>
+            <button onclick="viewProfile()">عرض الملف الشخصي</button>
+            <div class="article-form">
+                <h3>نشر مقالة جديدة</h3>
+                <input type="text" id="articleTitle" placeholder="عنوان المقالة...">
+                <textarea id="articleContent" placeholder="اكتب مقالتك هنا..." rows="5"></textarea>
+                <input type="text" id="articleDescription" placeholder="وصف المقالة...">
+                <input type="file" id="articleFile" accept=".txt,.pdf,.docx">
+                <button onclick="addArticle()">نشر المقالة +</button>
+            </div>
+            <div class="articles-list" id="articlesList">
+                <!-- المقالات ستُعرض هنا -->
+            </div>
+        </div>
+
+        <!-- الملف الشخصي -->
+        <div id="profileSection" class="profile-section hidden">
+            <h2>الملف الشخصي</h2>
+            <button onclick="backToPublish()">العودة إلى النشر</button>
+            <div class="profile-info">
+                <p><strong>اسم المستخدم:</strong> <span id="profileUsername"></span></p>
+                <p><strong>نبذة:</strong> <span id="profileBio"></span></p>
+            </div>
+            <div class="profile-articles">
+                <h4>المقالات</h4>
+                <ul id="profileArticlesList"></ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2023 منصة نشر المقالات. جميع الحقوق محفوظة.
+    </footer>
+
+    <script>
+        let loggedIn = false;
+        let users = [];
+        let currentUser = null;
+        let articles = [];
+
+        function switchToRegister(event) {
+            event.preventDefault();
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('registerSection').classList.remove('hidden');
+        }
+
+        function switchToLogin(event) {
+            event.preventDefault();
+            document.getElementById('registerSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+        }
+
+        function register() {
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value.trim();
+            const bio = document.getElementById('registerBio').value.trim();
+
+            if (!username || !password) {
+                alert('يرجى إدخال اسم المستخدم وكلمة المرور.');
+                return;
+            }
+
+            if (users.find(user => user.username === username)) {
+                alert('اسم المستخدم موجود بالفعل.');
+                return;
+            }
+
+            users.push({ username, password, bio, articles: [] });
+            alert('تم إنشاء الحساب بنجاح!');
+            switchToLogin(event);
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            const user = users.find(u => u.username === username);
+            if (user) {
+                if (user.password !== password) {
+                    alert('كلمة المرور خاطئة.');
+                    return;
+                }
+                loggedIn = true;
+                currentUser = user;
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('publishSection').classList.remove('hidden');
+                renderArticles();
+            } else {
+                alert('اسم المستخدم غير صحيح.');
+            }
+        }
+
+        function logout() {
+            loggedIn = false;
+            currentUser = null;
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('publishSection').classList.add('hidden');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function addArticle() {
+            if (!loggedIn) {
+                alert('يجب تسجيل الدخول أولاً.');
+                return;
+            }
+
+            const title = document.getElementById('articleTitle').value.trim();
+            const content = document.getElementById('articleContent').value.trim();
+            const description = document.getElementById('articleDescription').value.trim();
+            const fileInput = document.getElementById('articleFile');
+
+            if (!title || !content) {
+                alert('يرجى إدخال عنوان ونص المقالة.');
+                return;
+            }
+
+            const article = {
+                id: Date.now(),
+                author: currentUser.username,
+                title: title,
+                description: description,
+                content: content,
+                file: fileInput.files[0] || null,
+                comments: [],
+                ratings: []
+            };
+
+            articles.push(article);
+            currentUser.articles.push(article);
+            renderArticles();
+
+            // إعادة تعيين الحقول
+            document.getElementById('articleTitle').value = '';
+            document.getElementById('articleContent').value = '';
+            document.getElementById('articleDescription').value = '';
+            document.getElementById('articleFile').value = '';
+        }
+
+        function renderArticles() {
+            const articlesList = document.getElementById('articlesList');
+            articlesList.innerHTML = '';
+
+            articles.forEach(article => {
+                const articleItem = document.createElement('div');
+                articleItem.className = 'article-item';
+
+                const title = document.createElement('h3');
+                title.textContent = article.title;
+                articleItem.appendChild(title);
+
+                const author = document.createElement('p');
+                author.textContent = `بواسطة: ${article.author}`;
+                articleItem.appendChild(author);
+
+                const description = document.createElement('p');
+                description.textContent = article.description;
+                articleItem.appendChild(description);
+
+                const content = document.createElement('p');
+                content.textContent = article.content;
+                articleItem.appendChild(content);
+
+                if (article.file) {
+                    const fileLink = document.createElement('a');
+                    fileLink.href = URL.createObjectURL(article.file);
+                    fileLink.className = 'file-link';
+                    fileLink.textContent = `تحميل المرفق: ${article.file.name}`;
+                    fileLink.target = '_blank';
+                    fileLink.download = article.file.name;
+                    articleItem.appendChild(fileLink);
+                }
+
+                // تقييم المقالة
+                const ratingSection = document.createElement('div');
+                ratingSection.className = 'rating';
+                ratingSection.innerHTML = 'تقييم: ';
+
+                for (let i = 1; i <= 5; i++) {
+                    const star = document.createElement('span');
+                    star.textContent = '★';
+                    star.onclick = () => rateArticle(article.id, i, star.parentElement);
+                    if (currentUser && article.ratings.includes(currentUser.username)) {
+                        star.classList.add('rated');
+                        star.onclick = null;
+                    }
+                    ratingSection.appendChild(star);
+                }
+
+                articleItem.appendChild(ratingSection);
+
+                // عرض التقييم الحالي
+                const currentRating = document.createElement('p');
+                const averageRating = calculateAverageRating(article.ratings);
+                currentRating.textContent = `التقييم الحالي: ${averageRating}/5`;
+                articleItem.appendChild(currentRating);
+
+                // التعليقات
+                const commentsSection = document.createElement('div');
+                commentsSection.className = 'comments-section';
+
+                article.comments.forEach(comment => {
+                    const commentDiv = document.createElement('div');
+                    commentDiv.className = 'comment';
+
+                    const commentAuthor = document.createElement('span');
+                    commentAuthor.className = 'comment-author';
+                    commentAuthor.textContent = comment.author;
+                    commentDiv.appendChild(commentAuthor);
+
+                    const commentText = document.createElement('span');
+                    commentText.textContent = `: ${comment.text}`;
+                    commentDiv.appendChild(commentText);
+
+                    commentsSection.appendChild(commentDiv);
+                });
+
+                articleItem.appendChild(commentsSection);
+
+                // إضافة تعليق
+                const commentInput = document.createElement('div');
+                commentInput.className = 'comment-input';
+                const inputField = document.createElement('input');
+                inputField.type = 'text';
+                inputField.placeholder = 'أضف تعليقك...';
+                const addButton = document.createElement('button');
+                addButton.textContent = 'تعليق';
+                addButton.onclick = () => addComment(article.id, inputField.value);
+
+                commentInput.appendChild(inputField);
+                commentInput.appendChild(addButton);
+                articleItem.appendChild(commentInput);
+
+                articlesList.appendChild(articleItem);
+            });
+        }
+
+        function calculateAverageRating(ratings) {
+            if (ratings.length === 0) return 0;
+            const total = ratings.reduce((sum, rating) => sum + rating, 0);
+            return (total / ratings.length).toFixed(1);
+        }
+
+        function rateArticle(id, rating, ratingSection) {
+            const article = articles.find(a => a.id === id);
+            if (article && !article.ratings.includes(currentUser.username)) {
+                article.ratings.push(currentUser.username);
+                article.ratingSum = (article.ratingSum || 0) + rating;
+                renderArticles();
+            } else {
+                alert('لقد قمت بتقييم هذه المقالة من قبل.');
+            }
+        }
+
+        function addComment(id, commentText) {
+            if (!loggedIn) {
+                alert('يجب تسجيل الدخول لترك تعليق.');
+                return;
+            }
+
+            if (!commentText.trim()) {
+                alert('يرجى كتابة تعليق.');
+                return;
+            }
+
+            const article = articles.find(a => a.id === id);
+            if (article) {
+                const comment = {
+                    author: currentUser.username,
+                    text: commentText.trim()
+                };
+                article.comments.push(comment);
+                renderArticles();
+            }
+        }
+
+        function viewProfile() {
+            document.getElementById('publishSection').classList.add('hidden');
+            document.getElementById('profileSection').classList.remove('hidden');
+
+            document.getElementById('profileUsername').textContent = currentUser.username;
+            document.getElementById('profileBio').textContent = currentUser.bio;
+
+            const profileArticlesList = document.getElementById('profileArticlesList');
+            profileArticlesList.innerHTML = '';
+
+            currentUser.articles.forEach(article => {
+                const listItem = document.createElement('li');
+                listItem.textContent = article.title;
+                profileArticlesList.appendChild(listItem);
+            });
+        }
+
+        function backToPublish() {
+            document.getElementById('profileSection').classList.add('hidden');
+            document.getElementById('publishSection').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
